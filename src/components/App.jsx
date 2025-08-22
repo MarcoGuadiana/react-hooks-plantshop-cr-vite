@@ -1,14 +1,37 @@
-import React from "react";
-import Header from "./Header";
-import PlantPage from "./PlantPage";
+import { useState, useEffect } from "react";
+import NewPlantForm from "./NewPlantForm";
+import PlantList from "./PlantList";
+import Search from "./Search";
 
-function App() {
+function PlantPage() {
+  const [plants, setPlants] = useState([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:3000/plants")
+      .then(res => res.json())
+      .then(data => setPlants(data));
+  }, []);
+
+  function handleAddPlant(newPlant) {
+    setPlants([...plants, newPlant]);
+  }
+
+  function handleUpdatePlant(updatedPlant) {
+    setPlants(plants.map(p => p.id === updatedPlant.id ? updatedPlant : p));
+  }
+
+  const displayedPlants = plants.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="app">
-      <Header />
-      <PlantPage />
-    </div>
+    <main>
+      <NewPlantForm onAddPlant={handleAddPlant} />
+      <Search search={search} onSearchChange={setSearch} />
+      <PlantList plants={displayedPlants} onUpdatePlant={handleUpdatePlant} />
+    </main>
   );
 }
 
-export default App;
+export default PlantPage;
