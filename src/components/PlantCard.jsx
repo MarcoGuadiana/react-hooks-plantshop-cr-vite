@@ -2,13 +2,13 @@ import React from "react";
 
 function PlantCard({ plant, onUpdatePlant }) {
   function handleToggleSoldOut() {
-    fetch(`http://localhost:3000/plants/${plant.id}`, {
+    fetch(`http://localhost:6001/plants/${plant.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ soldOut: !plant.soldOut }),
     })
-      .then((res) => res.json())
-      .then((updatedPlant) => onUpdatePlant(updatedPlant));
+      .then(res => res.json())
+      .then(updatedPlant => onUpdatePlant(updatedPlant));
   }
 
   return (
@@ -16,13 +16,12 @@ function PlantCard({ plant, onUpdatePlant }) {
       <img src={plant.image} alt={plant.name} />
       <h4>{plant.name}</h4>
       <p>Price: ${plant.price}</p>
-      {plant.soldOut ? (
-        <button onClick={handleToggleSoldOut}>Out of Stock</button>
-      ) : (
-        <button className="primary" onClick={handleToggleSoldOut}>
-          In Stock
-        </button>
-      )}
+      <button
+        className={plant.soldOut ? "" : "primary"}
+        onClick={handleToggleSoldOut}
+      >
+        {plant.soldOut ? "Out of Stock" : "In Stock"}
+      </button>
     </li>
   );
 }
